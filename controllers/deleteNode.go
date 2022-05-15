@@ -13,7 +13,7 @@ type DeleteNodeController struct {
 	beego.Controller
 }
 
-func (c *DeleteNodeController) Post() {
+func (c *DeleteNodeController) Get() {
 	values, err := c.Input()
 	if err != nil {
 		log.Printf("c.Input() failed: %v \n", err)
@@ -30,6 +30,7 @@ func (c *DeleteNodeController) Post() {
 	} else {
 		c.Data["json"] = &CommonResponse{
 			Code: 0,
+			Data: "success",
 		}
 	}
 

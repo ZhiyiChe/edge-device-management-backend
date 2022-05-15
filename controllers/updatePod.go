@@ -13,11 +13,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type AddPodController struct {
+type UpdatePodController struct {
 	beego.Controller
 }
 
-func (c *AddPodController) Post() {
+func (c *UpdatePodController) Post() {
 	pod := &v1.Pod{}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, pod)
 	if err != nil {
@@ -28,7 +28,7 @@ func (c *AddPodController) Post() {
 	fmt.Println(pod)
 
 	namespace := pod.ObjectMeta.Namespace
-	pod, err = ClientSet.CoreV1().Pods(namespace).Create(context.TODO(), pod, metav1.CreateOptions{})
+	pod, err = ClientSet.CoreV1().Pods(namespace).Update(context.TODO(), pod, metav1.UpdateOptions{})
 	if err != nil {
 		log.Printf("ClientSet.CoreV1().Pods().Create() failed: %v \n", err)
 		c.Data["json"] = &CommonResponse{

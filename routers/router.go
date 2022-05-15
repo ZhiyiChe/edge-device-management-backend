@@ -15,9 +15,10 @@ func init() {
 	beego.Router("/v1/downloadK3sImages", &controllers.DownloadK3sImagesController{})
 	beego.Router("/v1/downloadInstallScript", &controllers.DownloadInstallScriptController{})
 
-	beego.Router("/v1/queryNode", &controllers.QueryNodeController{})
 	beego.Router("/v1/approveNode", &controllers.ApproveNodeController{})
+	beego.Router("/v1/queryNode", &controllers.QueryNodeController{})
 	beego.Router("/v1/deleteNode", &controllers.DeleteNodeController{})
+	beego.Router("/v1/updateNode", &controllers.UpdateNodeController{})
 
 	beego.Router("/v1/queryToken", &controllers.QueryTokenController{})
 
@@ -27,5 +28,18 @@ func init() {
 
 	beego.Router("/v1/queryPod", &controllers.QueryPodController{})
 	beego.Router("/v1/addPod", &controllers.AddPodController{})
+	beego.Router("/v1/updatePod", &controllers.UpdatePodController{})
 	beego.Router("/v1/deletePod", &controllers.DeletePodController{})
+
+	beego.Router("/v1/queryDeployment", &controllers.QueryDeploymentController{})
+
+	beego.Router("/v1/queryService", &controllers.QueryServiceController{})
+
+	beego.Router("/v1/execKubectl", &controllers.ExecKubectlController{})
+
+	beego.Router("/v1/login", &controllers.LoginController{})
+	beego.Router("/v1/queryUser", &controllers.QueryUserController{})
+	beego.Router("/v1/addUser", &controllers.AddUserController{})
+	beego.Router("/v1/updateUser", &controllers.UpdateUserController{})
+	beego.Router("/v1/deleteUser", &controllers.DeleteUserController{})
 }

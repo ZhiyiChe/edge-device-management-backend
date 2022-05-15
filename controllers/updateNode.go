@@ -2,25 +2,30 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 
 	beego "github.com/beego/beego/v2/server/web"
 
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type ApproveNodeController struct {
+type UpdateNodeController struct {
 	beego.Controller
 }
 
-func (c *ApproveNodeController) Get() {
-	values, err := c.Input()
+func (c *UpdateNodeController) Post() {
+	node := &v1.Node{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, node)
 	if err != nil {
-		log.Printf("c.Input() failed: %v \n", err)
+		log.Printf("json.Unmarshal() failed: %v \n", err)
 	}
+	fmt.Println(node.ObjectMeta.Labels)
 
-	nodeName := values.Get("nodeName")
-	node, err := ClientSet.CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
+	// 通过nodeName查找Node
+	nodeTmp, err := ClientSet.CoreV1().Nodes().Get(context.TODO(), node.ObjectMeta.Name, metav1.GetOptions{})
 	if err != nil {
 		log.Printf("ClientSet.CoreV1().Nodes().Get() failed: %v \n", err)
 		c.Data["json"] = &CommonResponse{
@@ -30,8 +35,9 @@ func (c *ApproveNodeController) Get() {
 		goto END
 	}
 
-	(*node).ObjectMeta.Labels["isApproved"] = "yes" // add label
-	_, err = ClientSet.CoreV1().Nodes().Update(context.TODO(), node, metav1.UpdateOptions{})
+	// 更新Node
+	nodeTmp.ObjectMeta.Labels = node.ObjectMeta.Labels
+	_, err = ClientSet.CoreV1().Nodes().Update(context.TODO(), nodeTmp, metav1.UpdateOptions{})
 	if err != nil {
 		log.Printf("ClientSet.CoreV1().Nodes().Update() failed: %v \n", err)
 		c.Data["json"] = &CommonResponse{
