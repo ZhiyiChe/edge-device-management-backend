@@ -32,8 +32,12 @@ func init() {
 	beego.Router("/v1/deletePod", &controllers.DeletePodController{})
 
 	beego.Router("/v1/queryDeployment", &controllers.QueryDeploymentController{})
+	beego.Router("/v1/addDeployment", &controllers.AddDeploymentController{})
+	beego.Router("/v1/updateDeployment", &controllers.UpdateDeploymentController{})
+	beego.Router("/v1/deleteDeployment", &controllers.DeleteDeploymentController{})
 
 	beego.Router("/v1/queryService", &controllers.QueryServiceController{})
+	beego.Router("/v1/addService", &controllers.AddServiceController{})
 
 	beego.Router("/v1/execKubectl", &controllers.ExecKubectlController{})
 

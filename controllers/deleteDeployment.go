@@ -1,29 +1,30 @@
 package controllers
 
 import (
+	"context"
+
 	beego "github.com/beego/beego/v2/server/web"
 
-	"context"
 	"log"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type DeletePodController struct {
+type DeleteDeploymentController struct {
 	beego.Controller
 }
 
-func (c *DeletePodController) Get() {
+func (c *DeleteDeploymentController) Get() {
 	values, err := c.Input()
 	if err != nil {
 		log.Printf("c.Input() failed: %v \n", err)
 	}
 
-	podName := values.Get("name")
+	deploymentName := values.Get("name")
 	namespace := values.Get("namespace")
-	err = ClientSet.CoreV1().Pods(namespace).Delete(context.TODO(), podName, metav1.DeleteOptions{})
+	err = ClientSet.AppsV1().Deployments(namespace).Delete(context.TODO(), deploymentName, metav1.DeleteOptions{})
 	if err != nil {
-		log.Printf("ClientSet.CoreV1().Pods().Delete() failed: %v \n", err)
+		log.Printf("ClientSet.AppsV1().Deployments().Delete() failed: %v \n", err)
 		c.Data["json"] = &CommonResponse{
 			Code: -1,
 			Data: err.Error(),
@@ -31,6 +32,7 @@ func (c *DeletePodController) Get() {
 	} else {
 		c.Data["json"] = &CommonResponse{
 			Code: 0,
+			Data: "success",
 		}
 	}
 

@@ -27,6 +27,8 @@ func (c *AddPodController) Post() {
 	fmt.Println(c.Ctx.Input.RequestBody)
 	fmt.Println(pod)
 
+	pod.Spec.NodeSelector["isApproved"] = "yes"
+
 	namespace := pod.ObjectMeta.Namespace
 	pod, err = ClientSet.CoreV1().Pods(namespace).Create(context.TODO(), pod, metav1.CreateOptions{})
 	if err != nil {
