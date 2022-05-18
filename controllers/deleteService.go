@@ -2,27 +2,26 @@ package controllers
 
 import (
 	"context"
-
 	"log"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type DeleteDeploymentController struct {
+type DeleteServiceController struct {
 	MainController
 }
 
-func (c *DeleteDeploymentController) Get() {
+func (c *DeleteServiceController) Get() {
 	values, err := c.Input()
 	if err != nil {
 		log.Printf("c.Input() failed: %v \n", err)
 	}
 
-	deploymentName := values.Get("name")
+	serviceName := values.Get("name")
 	namespace := values.Get("namespace")
-	err = ClientSet.AppsV1().Deployments(namespace).Delete(context.TODO(), deploymentName, metav1.DeleteOptions{})
+	err = ClientSet.CoreV1().Services(namespace).Delete(context.TODO(), serviceName, metav1.DeleteOptions{})
 	if err != nil {
-		log.Printf("ClientSet.AppsV1().Deployments().Delete() failed: %v \n", err)
+		log.Printf("ClientSet.CoreV1().Services().Delete() failed: %v \n", err)
 		c.Data["json"] = &CommonResponse{
 			Code: -1,
 			Data: err.Error(),
@@ -30,7 +29,6 @@ func (c *DeleteDeploymentController) Get() {
 	} else {
 		c.Data["json"] = &CommonResponse{
 			Code: 0,
-			Data: "success",
 		}
 	}
 

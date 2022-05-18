@@ -3,8 +3,6 @@ package controllers
 import (
 	"log"
 	"os"
-
-	beego "github.com/beego/beego/v2/server/web"
 )
 
 var token []byte
@@ -31,7 +29,7 @@ func init() {
 }
 
 type QueryTokenController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *QueryTokenController) Get() {

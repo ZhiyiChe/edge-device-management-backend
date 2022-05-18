@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	beego "github.com/beego/beego/v2/server/web"
-
 	"log"
 
 	v1 "k8s.io/api/apps/v1"
@@ -13,7 +11,7 @@ import (
 )
 
 type AddDeploymentController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *AddDeploymentController) Post() {

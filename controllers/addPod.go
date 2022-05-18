@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	beego "github.com/beego/beego/v2/server/web"
-
 	"log"
 
 	v1 "k8s.io/api/core/v1"
@@ -14,7 +12,7 @@ import (
 )
 
 type AddPodController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *AddPodController) Post() {

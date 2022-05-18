@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	beego "github.com/beego/beego/v2/server/web"
-
 	"context"
 	"log"
 
@@ -10,7 +8,7 @@ import (
 )
 
 type QueryPodController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *QueryPodController) Get() {

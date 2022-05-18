@@ -38,6 +38,8 @@ func init() {
 
 	beego.Router("/v1/queryService", &controllers.QueryServiceController{})
 	beego.Router("/v1/addService", &controllers.AddServiceController{})
+	beego.Router("/v1/updateService", &controllers.UpdateServiceController{})
+	beego.Router("/v1/deleteService", &controllers.DeleteServiceController{})
 
 	beego.Router("/v1/execKubectl", &controllers.ExecKubectlController{})
 
@@ -46,4 +48,7 @@ func init() {
 	beego.Router("/v1/addUser", &controllers.AddUserController{})
 	beego.Router("/v1/updateUser", &controllers.UpdateUserController{})
 	beego.Router("/v1/deleteUser", &controllers.DeleteUserController{})
+
+	beego.Router("/v1/queryApiLogs", &controllers.QueryApiLogsController{})
+	beego.Router("/v1/queryBeegoLogs", &controllers.QueryBeegoLogsController{})
 }

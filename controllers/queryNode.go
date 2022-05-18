@@ -4,13 +4,11 @@ import (
 	"context"
 	"log"
 
-	beego "github.com/beego/beego/v2/server/web"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type QueryNodeController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *QueryNodeController) Get() {

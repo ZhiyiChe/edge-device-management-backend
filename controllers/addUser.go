@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	beego "github.com/beego/beego/v2/server/web"
 	"gorm.io/gorm"
 
 	"log"
@@ -14,7 +13,7 @@ import (
 )
 
 type AddUserController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *AddUserController) Post() {

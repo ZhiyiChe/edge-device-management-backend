@@ -4,15 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	beego "github.com/beego/beego/v2/server/web"
-
 	"log"
 
 	"edge-device-management-backend/models"
 )
 
 type UpdateUserController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *UpdateUserController) Post() {

@@ -1,13 +1,16 @@
 package controllers
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"time"
 
-	beego "github.com/beego/beego/v2/server/web"
+	"github.com/beego/beego/v2/core/logs"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
+	beego "github.com/beego/beego/v2/server/web"
 	"github.com/dgrijalva/jwt-go"
 
 	"edge-device-management-backend/models"
@@ -15,7 +18,7 @@ import (
 
 const (
 	KEY                    string = "JWT-ARY-STARK"
-	DEFAULT_EXPIRE_SECONDS int    = 60 * 30 // 默认过期时间（s）
+	DEFAULT_EXPIRE_SECONDS int    = 60 * 60 * 24 * 3 // 默认过期时间（s）
 )
 
 // JWT -- json web token
@@ -78,6 +81,10 @@ func GenerateToken(info *models.User, expiredSeconds int) (tokenString string, e
 
 // ValidateToken 验证jtw token
 func ValidateToken(tokenString string) (info models.User, err error) {
+	if tokenString == "" {
+		err = errors.New("token is empty")
+		return
+	}
 	token, err := jwt.ParseWithClaims(
 		tokenString,
 		&MyCustomClaims{},
@@ -98,8 +105,51 @@ type MainController struct {
 	beego.Controller
 }
 
-func (c *MainController) Get() {
-	c.Data["Website"] = "beego.me"
-	c.Data["Email"] = "astaxie@gmail.com"
-	c.TplName = "index.tpl"
+// func (c *MainController) Get() {
+// 	c.Data["Website"] = "beego.me"
+// 	c.Data["Email"] = "astaxie@gmail.com"
+// 	c.TplName = "index.tpl"
+// }
+
+func (c *MainController) Prepare() {
+	header := fmt.Sprintf("%s %s %s\n", c.Ctx.Request.Method, c.Ctx.Request.URL.RequestURI(), c.Ctx.Request.Proto)
+	for key, value := range c.Ctx.Request.Header {
+		headerVals := ""
+		for i := 0; i < len(value); i++ {
+			headerVals += value[i]
+			if i != len(value)-1 {
+				headerVals += ", "
+			}
+		}
+		header += fmt.Sprintf("%s: %s\n", key, headerVals)
+	}
+	header += "\n"
+
+	// 校验token
+	token := c.Ctx.Request.Header.Get("token")
+	user, err := ValidateToken(token)
+	if err != nil {
+		// token超时或校验失败
+		logs.Info("ValidateToken() failed: %v", err)
+		c.Data["json"] = &CommonResponse{
+			Code: -1,
+			Data: err.Error(),
+		}
+		c.ServeJSON()
+		c.StopRun()
+	} else {
+		// 记录接口调用日志
+		apiLog := models.Apilog{
+			Url:      c.Ctx.Request.URL.RequestURI(),
+			Header:   header,
+			Body:     string(c.Ctx.Input.RequestBody),
+			Caller:   user.Account,
+			CallTime: time.Now().Format("2006-01-02 15:04:05.999"),
+		}
+		result := models.Database.Create(&apiLog)
+		if result.Error != nil {
+			log.Printf("models.Database.Create() failed: %v \n", result.Error)
+		}
+		fmt.Println(apiLog)
+	}
 }

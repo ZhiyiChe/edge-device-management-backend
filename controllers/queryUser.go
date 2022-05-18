@@ -3,13 +3,11 @@ package controllers
 import (
 	"log"
 
-	beego "github.com/beego/beego/v2/server/web"
-
 	"edge-device-management-backend/models"
 )
 
 type QueryUserController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *QueryUserController) Get() {

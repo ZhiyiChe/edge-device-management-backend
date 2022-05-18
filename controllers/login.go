@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 
-	beego "github.com/beego/beego/v2/server/web"
 	"gorm.io/gorm"
 
 	"log"
 
 	"edge-device-management-backend/models"
+
+	beego "github.com/beego/beego/v2/server/web"
 )
 
 type LoginController struct {

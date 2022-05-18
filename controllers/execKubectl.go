@@ -7,13 +7,13 @@ import (
 	"os/exec"
 	"strings"
 
-	beego "github.com/beego/beego/v2/server/web"
-
 	"log"
+
+	"github.com/beego/beego/v2/core/logs"
 )
 
 type ExecKubectlController struct {
-	beego.Controller
+	MainController
 }
 
 func (c *ExecKubectlController) Get() {
@@ -26,6 +26,7 @@ func (c *ExecKubectlController) Get() {
 	fmt.Println(kubectlCmd)
 	if len(kubectlCmd) < 7 || kubectlCmd[0:7] != "kubectl" || strings.Contains(kubectlCmd, "&") || strings.Contains(kubectlCmd, "|") {
 		c.Ctx.WriteString("command must begin with 'kubectl', and cannot include '&' or '|'")
+		logs.Info("execKubectl '%s' fail: command must begin with 'kubectl', and cannot include '&' or '|'", kubectlCmd)
 	} else {
 		args := strings.Split(kubectlCmd, " ")
 		args = args[1:] // 删除开头的"kubectl"
@@ -37,11 +38,15 @@ func (c *ExecKubectlController) Get() {
 		cmd.Stderr = os.Stderr
 		if err := cmd.Start(); err != nil {
 			log.Printf("cmd.Start() failed: %v \n", err)
+			c.Ctx.WriteString(err.Error())
 		}
 		if err := cmd.Wait(); err != nil {
 			log.Printf("cmd.Wait() failed: %v \n", err)
+			c.Ctx.WriteString(err.Error())
 		}
 
-		c.Ctx.WriteString(out.String())
+		if err == nil {
+			c.Ctx.WriteString(out.String())
+		}
 	}
 }
